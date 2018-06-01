@@ -2,6 +2,8 @@
 
 console.log('AntiPhish: started');
 
+var br = (typeof browser === 'undefined') ? chrome : browser
+
 var base_uri = getBaseUrl();
 var triggered = false;
 var stored = false;
@@ -12,11 +14,8 @@ var password = $('input');
 var form = $('form');
 
 
-var getting = browser.storage.local.get("color");
-getting.then(onGotColor, onErrorColor);
-
-var getting = browser.storage.local.get('visited');
-getting.then(onGotUri, onErrorUri);
+storage_get("color", onGotColor, onErrorColor);
+storage_get("visited", onGotUri, onErrorUri);
 
 //
 
@@ -27,6 +26,18 @@ function getBaseUrl()
 	if (l.port)
 		base_uri += ':' + l.port;
 	return base_uri;
+}
+
+
+function storage_get(name, func_ok, func_err = null)
+{
+	if (typeof browser === 'undefined')
+		chrome.storage.sync.get(name, func_ok);
+	else
+	{	// Firefox
+		var getting = browser.storage.sync.get(name);
+		getting.then(func_ok, func_err);
+	}
 }
 
 
@@ -87,9 +98,7 @@ function formHandler() {
 	if (stored)
 		return;
 
-	browser.storage.local.set({
-		'visited': visited
-	});
+	br.storage.sync.set({ 'visited': visited });
 
 	stored = true;
 
@@ -99,7 +108,10 @@ function formHandler() {
 
 function notifyExtension(uri) {
 	console.log("AntiPhish: content script sending message");
-	browser.runtime.sendMessage({"url": uri});
+	if (typeof browser === 'undefined')
+		chrome.runtime.sendMessage({"url": uri});
+	else
+		browser.runtime.sendMessage({"url": uri});
 }
 
 
