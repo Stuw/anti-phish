@@ -2,16 +2,21 @@
 
 console.log('AntiPhish: started');
 
+window.addEventListener("load", function load(event){
+	window.removeEventListener("load", load, false); //remove listener, no longer needed
+
+	setupEventHandlers();
+}, false);
+
+
 var br = (typeof browser === 'undefined') ? chrome : browser
 
 var base_uri = getBaseUrl();
+var handling = false;
 var triggered = false;
 var stored = false;
 var visited = []
 var color = "red";
-//var password = $('input[type="password"]');
-var password = $('input');
-var form = $('form');
 
 
 storage_get("color", onGotColor, onErrorColor);
@@ -54,24 +59,32 @@ function onGotUri(item) {
 	{
 		visited = []
 	}
-	else if (visited.includes(base_uri))
+}
+
+
+function setupEventHandlers() {
+	if (handling)
+		return;
+
+	console.log("AntiPhish: setupEventHandlers");
+
+	if (visited.includes(base_uri))
 	{
 		console.log("AntiPhish: base_uri in visited");
 		return;
 	}
 
-	setupEventHandlers();
-}
-
-
-function setupEventHandlers() {
-	console.log("AntiPhish: setupEventHandlers");
+	//var password = $('input[type="password"]');
+	var password = $('input');
+	var form = $('form');
 
 	password.on( "change", inputHandler );
 	password.on( "click", inputHandler );
 	password.addClass('anti_phish');
 
 	form.on( "submit", formHandler );
+
+	handling = true;
 }
 
 
