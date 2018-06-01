@@ -1,0 +1,27 @@
+{
+    "extensionName": {
+      "message": "Anti Phish (Анти Фиш)",
+      "description": "Название расширения."
+    },
+  
+    "extensionDescription": {
+      "message": "Показывает уведомления когда вы первый раз вводите пароль на сайте. Помогает определить поддельные сайты.",
+      "description": "Описание расширения."
+    },
+  
+    "notificationTitle": {
+      "message": "Пароль на новом сайте",
+      "description": "Заголовок уведомления."
+    },
+  
+    "notificationContent": {
+      "message": "Вы впервые вводите пароль или данные на сайте\n$URL$\n\nБудьте внимательны, перепроверьте адрес сайта..",
+      "description": "Детальная информация для пользователя.",
+      "placeholders": {
+        "url" : {
+          "content" : "$1",
+          "example" : "https://developer.mozilla.org"
+        }
+      }
+    }
+  }

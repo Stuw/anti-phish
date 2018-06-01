@@ -1,0 +1,27 @@
+{
+    "extensionName": {
+      "message": "Anti Phish",
+      "description": "Name of the extension."
+    },
+  
+    "extensionDescription": {
+      "message": "Shows an alert when you type a password on a site first time. Helps identify phished sites.",
+      "description": "Description of the extension."
+    },
+  
+    "notificationTitle": {
+      "message": "Password on new site",
+      "description": "Title of the notification."
+    },
+  
+    "notificationContent": {
+      "message": "You are about to enter a password first time on the site\n$URL$\n\nBe careful, recheck the URL.",
+      "description": "Tells the user details.",
+      "placeholders": {
+        "url" : {
+          "content" : "$1",
+          "example" : "https://developer.mozilla.org"
+        }
+      }
+    }
+  }
