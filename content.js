@@ -1,6 +1,6 @@
 // Icon: https://icons8.com/icon/68759/phishing
 
-console.log('AntiPhish: started');
+console.log('AntiPhish: started, doc state = ', window.document.readyState);
 
 window.addEventListener("load", function load(event){
 	window.removeEventListener("load", load, false); //remove listener, no longer needed
@@ -59,6 +59,9 @@ function onGotUri(item) {
 	{
 		visited = []
 	}
+
+	if (window.document.readyState == 'complete')
+		setupEventHandlers();
 }
 
 
