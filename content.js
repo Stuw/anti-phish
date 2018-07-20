@@ -65,6 +65,23 @@ function onGotUri(item) {
 }
 
 
+function visualMark(mark) {
+	var password = $('input');
+	var form = $('form');
+	var button = $('button');
+
+	console.log('AntiPhish: visualMark', mark);
+
+	if (mark) {
+		password.addClass('anti_phish');
+		button.addClass('anti_phish');
+	} else {
+		password.removeClass('anti_phish');
+		button.removeClass('anti_phish');
+	}
+}
+
+
 function setupEventHandlers() {
 	if (handling)
 		return;
@@ -80,12 +97,21 @@ function setupEventHandlers() {
 	//var password = $('input[type="password"]');
 	var password = $('input');
 	var form = $('form');
+	var button = $('button');
+
+	//console.log('AntiPhish: setupEventHandlers password', password);
+	//console.log('AntiPhish: setupEventHandlers form', form);
+	//console.log('AntiPhish: setupEventHandlers button', button);
 
 	password.on( "change", inputHandler );
 	password.on( "click", inputHandler );
-	password.addClass('anti_phish');
 
-	form.on( "submit", formHandler );
+	form.on( "submit", submitHandler );
+	password.on( "keypress", keyHandler );
+	password.on( "keydown", keyHandler );
+	button.on( "button", submitHandler );
+
+	visualMark(true);
 
 	handling = true;
 }
@@ -94,9 +120,10 @@ function setupEventHandlers() {
 function inputHandler(e) {
 	if (triggered)
 	{
-		console.log('AntiPhish: already triggered handler', base_uri, e.target.type);
+		console.log('AntiPhish: inputHandler: already triggered', base_uri, e.target.type);
 		return;
 	}
+	console.log('AntiPhish: inputHandler');
 
 	notifyExtension(base_uri)
 
@@ -107,18 +134,33 @@ function inputHandler(e) {
 	console.log('AntiPhish: handler complete ', base_uri);
 }
 
-function formHandler() {
+
+function keyHandler(e) {
+	if (e.which == 13 || e.keyCode == 13) {
+		console.log('AntiPhish: keyHandler', e);
+		submitHandler();
+	}
+
+	return true;
+}
+
+
+function submitHandler() {
+	console.log('AntiPhish: submitHandler');
 	if (!triggered)
 		notifyExtension(base_uri);
 
-	if (stored)
+	if (stored) {
+		console.log("AntiPhish: already stored", base_uri);
 		return;
+	}
 
 	br.storage.sync.set({ 'visited': visited });
 
 	stored = true;
+	visualMark(false);
 
-	console.log('AntiPhish: formHandler complete ', base_uri);
+	console.log('AntiPhish: submitHandler complete, mark visited', base_uri);
 }
 
 
